@@ -8,8 +8,8 @@ The frontend never calls GitHub directly. All requests are proxied through a Nod
 
 ## Live Demo
 
-- **Frontend:** [https://github-explorer.vercel.app](https://github-explorer.vercel.app) *(update after deploy)*
-- **Backend:** [https://github-explorer-api.onrender.com](https://github-explorer-api.onrender.com) *(update after deploy)*
+- Frontend: https://github-explorer-orcin.vercel.app
+- Backend: https://github-explorer-api-14to.onrender.com
 
 ---
 
