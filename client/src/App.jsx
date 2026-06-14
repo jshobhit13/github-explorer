@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { fetchUser, fetchRepos } from "./services/githubService";
 import { SearchBar } from "./components/SearchBar/SearchBar";
 import { UserProfile } from "./components/UserProfile/UserProfile";
@@ -10,9 +11,11 @@ import { useRecentSearches } from "./hooks/useRecentSearches";
 import "./App.css";
 
 export default function App() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [user, setUser] = useState(null);
   const [allRepos, setAllRepos] = useState([]);
-  const [activeUsername, setActiveUsername] = useState("");
+  const [activeUsername, setActiveUsername] = useState(searchParams.get("q") || "");
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [error, setError] = useState(null);
 
@@ -34,13 +37,23 @@ export default function App() {
       setAllRepos(reposRes.data.repos);
       setActiveUsername(username);
       addSearch(username);
+      setSearchParams({ q: username }); // syncs URL
     } catch (err) {
       const msg = err.response?.data?.error || err.message || "Something went wrong";
       setError(msg);
+      setSearchParams({}); // clears URL on error
     } finally {
       setLoadingProfile(false);
     }
-  }, [activeUsername, addSearch]);
+  }, [activeUsername, addSearch, setSearchParams]);
+
+  // auto-search if URL already has ?q= on first load
+  useEffect(() => {
+    const query = searchParams.get("q");
+    if (query) {
+      handleSearch(query);
+    }
+  }, []);
 
   return (
     <div className="app">
